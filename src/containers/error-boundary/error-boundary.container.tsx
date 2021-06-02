@@ -31,7 +31,11 @@ class ErrorBoundary extends React.Component<
       return (
         <Center bgColor="#EFEDFA" height="100vh">
           <Box>
-            <Image src="/error.png" alt="Ice Cream" maxWidth="25rem" />
+            <Image
+              src={process.env.PUBLIC_URL + "/error.png"}
+              alt="Ice Cream"
+              maxWidth="25rem"
+            />
             <Text
               textAlign="center"
               color="#9b8875"
