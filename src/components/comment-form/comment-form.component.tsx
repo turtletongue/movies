@@ -16,7 +16,12 @@ const CommentForm = ({ onCommentAdd }: CommentFormProps) => {
         value={commentInputText}
         onChange={(event) => setCommentInputText(event.target.value)}
       />
-      <Button colorScheme="teal" mr={3} onClick={onCommentAdd}>
+      <Button
+        colorScheme="teal"
+        mr={3}
+        onClick={onCommentAdd}
+        isDisabled={commentInputText.trim() === ""}
+      >
         Send
       </Button>
     </>
