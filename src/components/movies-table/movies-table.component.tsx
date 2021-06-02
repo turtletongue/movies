@@ -107,7 +107,7 @@ const MoviesTable = ({ movies, handleMoviesChange }: MoviesTableProps) => {
                   <Image
                     src={movie.medium_cover_image}
                     alt={movie.title}
-                    width="12rem"
+                    width="11rem"
                   />
                 </Td>
                 <Td
@@ -122,20 +122,26 @@ const MoviesTable = ({ movies, handleMoviesChange }: MoviesTableProps) => {
                   justifyContent="space-between"
                 >
                   {!isGreaterThan920 && <Text fontWeight={600}>Genres</Text>}
-                  <Text>{movie.genres.join(", ")}</Text>
+                  <Text maxWidth={isGreaterThan920 ? "100%" : "70%"}>
+                    {movie.genres.join(", ")}
+                  </Text>
                 </Td>
                 <Td
                   d={!isGreaterThan920 ? "flex" : "table-cell"}
                   justifyContent="space-between"
                 >
                   {!isGreaterThan920 && <Text fontWeight={600}>Synopsis</Text>}
-                  <Text maxWidth="70%" textAlign="justify">
+                  <Text
+                    maxWidth={isGreaterThan920 ? "90%" : "70%"}
+                    textAlign="justify"
+                  >
                     {movie.synopsis}
                   </Text>
                 </Td>
                 <Td
                   d={!isGreaterThan920 ? "flex" : "table-cell"}
                   justifyContent="space-between"
+                  alignItems="center"
                 >
                   {!isGreaterThan920 && <Text fontWeight={600}>Comments</Text>}
                   <Button onClick={() => handleCommentsShow(movie)}>
