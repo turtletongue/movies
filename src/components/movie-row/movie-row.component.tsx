@@ -26,7 +26,8 @@ const MovieRow = ({ index, movie, onCommentShow }: MovieRowProps) => {
           <Image
             src={movie.medium_cover_image}
             alt={movie.title}
-            width="11rem"
+            width="10rem"
+            height="16rem"
             onLoad={() => setIsImageLoaded(true)}
           />
         </Skeleton>

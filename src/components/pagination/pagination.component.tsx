@@ -15,7 +15,10 @@ const Pagination = ({ totalCountOfMovies }: PaginationProps) => {
   const nextPage = currentPage + 1;
   return (
     <HStack spacing={2} margin="0.5rem" maxWidth="100vw" overflow="hidden">
-      <Button onClick={() => currentPage > 1 && setCurrentPage(previousPage)}>
+      <Button
+        onClick={() => currentPage > 1 && setCurrentPage(previousPage)}
+        aria-label="Previous Page"
+      >
         <ArrowBackIcon />
       </Button>
       {currentPage > 1 && (
@@ -37,6 +40,7 @@ const Pagination = ({ totalCountOfMovies }: PaginationProps) => {
       )}
       <Button
         onClick={() => currentPage < lastPage - 1 && setCurrentPage(nextPage)}
+        aria-label="Next Page"
       >
         <ArrowForwardIcon />
       </Button>
