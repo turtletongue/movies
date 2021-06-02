@@ -22,6 +22,7 @@ const CommentCard = ({ comment, onCommentRemove }: CommentCardProps) => {
       <DeleteIcon
         cursor="pointer"
         onClick={() => onCommentRemove(comment.id)}
+        focusable
       />
     </Flex>
   );
