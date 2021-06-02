@@ -26,7 +26,7 @@ interface MoviesTableProps {
 
 const MoviesTable = ({ movies, handleMoviesChange }: MoviesTableProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [isGreaterThan720] = useMediaQuery("(min-width: 720px)");
+  const [isGreaterThan920] = useMediaQuery("(min-width: 920px)");
   const [selectedMovie, setSelectedMovie] = useState(movies[0]);
   const [commentInputText, setCommentInputText] = useState("");
   const handleCommentsShow = (movie: Movie) => {
@@ -80,30 +80,64 @@ const MoviesTable = ({ movies, handleMoviesChange }: MoviesTableProps) => {
   return (
     <>
       <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th minWidth="13rem">Poster</Th>
-            <Th minWidth="10rem">Title</Th>
-            {isGreaterThan720 && <Th>Genres</Th>}
-            <Th minWidth="13rem">Synopsis</Th>
-            <Th>Comments</Th>
-          </Tr>
-        </Thead>
+        {isGreaterThan920 && (
+          <Thead>
+            <Tr>
+              <Th minWidth="16rem">Poster</Th>
+              <Th minWidth="10rem">Title</Th>
+              <Th>Genres</Th>
+              <Th minWidth="13rem">Synopsis</Th>
+              <Th>Comments</Th>
+            </Tr>
+          </Thead>
+        )}
         <Tbody>
-          {movies.map((movie) => {
+          {movies.map((movie, index) => {
             return (
-              <Tr key={movie.id}>
-                <Td width="13rem">
+              <Tr
+                key={movie.id}
+                borderTop={index !== 0 ? "1px solid #7b7b7b" : "none"}
+              >
+                <Td
+                  maxHeight="19rem"
+                  d={!isGreaterThan920 ? "flex" : "table-cell"}
+                  justifyContent="space-between"
+                >
+                  {!isGreaterThan920 && <Text fontWeight={600}>Poster</Text>}
                   <Image
                     src={movie.medium_cover_image}
                     alt={movie.title}
-                    width="100%"
+                    width="12rem"
                   />
                 </Td>
-                <Td>{movie.title}</Td>
-                {isGreaterThan720 && <Td>{movie.genres.join(", ")}</Td>}
-                <Td>{movie.synopsis}</Td>
-                <Td>
+                <Td
+                  d={!isGreaterThan920 ? "flex" : "table-cell"}
+                  justifyContent="space-between"
+                >
+                  {!isGreaterThan920 && <Text fontWeight={600}>Title</Text>}
+                  <Text>{movie.title}</Text>
+                </Td>
+                <Td
+                  d={!isGreaterThan920 ? "flex" : "table-cell"}
+                  justifyContent="space-between"
+                >
+                  {!isGreaterThan920 && <Text fontWeight={600}>Genres</Text>}
+                  <Text>{movie.genres.join(", ")}</Text>
+                </Td>
+                <Td
+                  d={!isGreaterThan920 ? "flex" : "table-cell"}
+                  justifyContent="space-between"
+                >
+                  {!isGreaterThan920 && <Text fontWeight={600}>Synopsis</Text>}
+                  <Text maxWidth="70%" textAlign="justify">
+                    {movie.synopsis}
+                  </Text>
+                </Td>
+                <Td
+                  d={!isGreaterThan920 ? "flex" : "table-cell"}
+                  justifyContent="space-between"
+                >
+                  {!isGreaterThan920 && <Text fontWeight={600}>Comments</Text>}
                   <Button onClick={() => handleCommentsShow(movie)}>
                     Show
                   </Button>
