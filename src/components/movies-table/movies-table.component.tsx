@@ -1,6 +1,7 @@
 import { useDisclosure } from "@chakra-ui/hooks";
 import { useMediaQuery } from "@chakra-ui/media-query";
 import { Table, Tbody } from "@chakra-ui/table";
+import { useToast } from "@chakra-ui/toast";
 import { useMemo } from "react";
 import Movie from "../../interfaces/Movie";
 import { useMoviesData, useMoviesTable } from "../../redux/hooks";
@@ -17,6 +18,7 @@ const MoviesTable = ({ movies }: MoviesTableProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isGreaterThan920] = useMediaQuery("(min-width: 920px)");
   const { addComment, removeComment } = useMoviesData();
+  const toast = useToast();
 
   const {
     selectedMovieId,
@@ -36,7 +38,15 @@ const MoviesTable = ({ movies }: MoviesTableProps) => {
   };
 
   const onCommentAdd = () => {
-    if (commentInputText.trim() === "") return;
+    if (commentInputText.trim() === "") {
+      toast({
+        title: "Your comment is empty!",
+        status: "warning",
+        isClosable: true,
+        description: "Enter text and try again.",
+      });
+      return;
+    }
     addComment(selectedMovieId, commentInputText);
     setCommentInputText("");
   };
