@@ -41,10 +41,14 @@ export const useMoviesData = () => {
   };
 };
 
+let fetchMovies: ((page: number) => Promise<void>) | null = null;
+
 export const useFetchMoviesData = () => {
   const dispatch = useAppDispatch();
 
-  const fetchMovies = async (page: number) => {
+  if (fetchMovies) return fetchMovies;
+
+  fetchMovies = async (page: number) => {
     await dispatch(fetchMoviesData(page));
   };
 

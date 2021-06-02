@@ -14,7 +14,7 @@ const Pagination = ({ totalCountOfMovies }: PaginationProps) => {
   const previousPage = currentPage - 1;
   const nextPage = currentPage + 1;
   return (
-    <HStack spacing={2} margin="0.5rem">
+    <HStack spacing={2} margin="0.5rem" maxWidth="100vw" overflow="hidden">
       <Button onClick={() => currentPage > 1 && setCurrentPage(previousPage)}>
         <ArrowBackIcon />
       </Button>

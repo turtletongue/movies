@@ -1,5 +1,5 @@
 import { Spinner } from "@chakra-ui/react";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import ErrorAlert from "../../components/error-alert/error-alert.component";
 import MoviesTable from "../../components/movies-table/movies-table.component";
 import Pagination from "../../components/pagination/pagination.component";
@@ -15,8 +15,7 @@ import PageContent from "../page-content/page-content.container";
 
 const App = () => {
   const { currentPage } = usePagination();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchMoviesData = useCallback(useFetchMoviesData(), []);
+  const fetchMoviesData = useFetchMoviesData();
   const { movies, moviesFetchError, isLoading, totalCountOfMovies } =
     useMoviesData();
 
