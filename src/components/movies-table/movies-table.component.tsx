@@ -1,203 +1,74 @@
-import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
-import { DeleteIcon } from "@chakra-ui/icons";
-import { Image } from "@chakra-ui/image";
-import { Flex, Text, VStack } from "@chakra-ui/layout";
 import { useMediaQuery } from "@chakra-ui/media-query";
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/modal";
-import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/table";
-import { Textarea } from "@chakra-ui/textarea";
-import { useState } from "react";
-import Comment from "../../interfaces/Comment";
+import { Table, Tbody } from "@chakra-ui/table";
+import { useMemo } from "react";
 import Movie from "../../interfaces/Movie";
+import { useMoviesData, useMoviesTable } from "../../redux/hooks";
+import CommentsModal from "../comments-modal/comments-modal.component";
+import MovieRow from "../movie-row/movie-row.component";
+import TableHead from "../table-head/table-head.component";
+import "./movies-table.styles.css";
 
 interface MoviesTableProps {
   movies: Movie[];
-  handleMoviesChange: (movies: Movie[]) => void;
 }
 
-const MoviesTable = ({ movies, handleMoviesChange }: MoviesTableProps) => {
+const MoviesTable = ({ movies }: MoviesTableProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isGreaterThan920] = useMediaQuery("(min-width: 920px)");
-  const [selectedMovie, setSelectedMovie] = useState(movies[0]);
-  const [commentInputText, setCommentInputText] = useState("");
-  const handleCommentsShow = (movie: Movie) => {
-    setSelectedMovie(movie);
+  const { addComment, removeComment } = useMoviesData();
+
+  const {
+    selectedMovieId,
+    setSelectedMovieId,
+    commentInputText,
+    setCommentInputText,
+  } = useMoviesTable();
+
+  const selectedMovie = useMemo(
+    () => movies.find((movie) => movie.id === selectedMovieId),
+    [selectedMovieId, movies]
+  );
+
+  const onCommentShow = (id: number) => {
+    setSelectedMovieId(id);
     onOpen();
   };
-  const handleCommentAdd = () => {
+
+  const onCommentAdd = () => {
     if (commentInputText.trim() === "") return;
-    let updatedComments: Comment[] = [];
-    handleMoviesChange(
-      movies.map((movie) => {
-        if (movie.id === selectedMovie.id) {
-          updatedComments = [
-            ...movie.comments,
-            {
-              id: (movie.comments[movie.comments.length - 1]?.id || 0) + 1,
-              content: commentInputText,
-            },
-          ];
-          return { ...movie, comments: updatedComments };
-        }
-        return movie;
-      })
-    );
-    localStorage.setItem(
-      selectedMovie.id.toString(),
-      JSON.stringify(updatedComments)
-    );
+    addComment(selectedMovieId, commentInputText);
     setCommentInputText("");
-    onClose();
   };
-  const handleCommentDelete = (commentId: number) => {
-    let updatedComments: Comment[] = [];
-    handleMoviesChange(
-      movies.map((movie) => {
-        if (movie.id === selectedMovie.id) {
-          updatedComments = movie.comments.filter((comment) => {
-            return comment.id !== commentId;
-          });
-          return { ...movie, comments: updatedComments };
-        }
-        return movie;
-      })
-    );
-    localStorage.setItem(
-      selectedMovie.id.toString(),
-      JSON.stringify(updatedComments)
-    );
-    onClose();
+
+  const onCommentRemove = (commentId: number) => {
+    removeComment(selectedMovieId, commentId);
   };
+
   return (
     <>
       <Table variant="simple">
-        {isGreaterThan920 && (
-          <Thead>
-            <Tr>
-              <Th minWidth="16rem">Poster</Th>
-              <Th minWidth="10rem">Title</Th>
-              <Th>Genres</Th>
-              <Th minWidth="13rem">Synopsis</Th>
-              <Th>Comments</Th>
-            </Tr>
-          </Thead>
-        )}
+        {isGreaterThan920 && <TableHead />}
         <Tbody>
           {movies.map((movie, index) => {
             return (
-              <Tr
+              <MovieRow
                 key={movie.id}
-                borderTop={index !== 0 ? "1px solid #7b7b7b" : "none"}
-              >
-                <Td
-                  maxHeight="19rem"
-                  d={!isGreaterThan920 ? "flex" : "table-cell"}
-                  justifyContent="space-between"
-                >
-                  {!isGreaterThan920 && <Text fontWeight={600}>Poster</Text>}
-                  <Image
-                    src={movie.medium_cover_image}
-                    alt={movie.title}
-                    width="11rem"
-                  />
-                </Td>
-                <Td
-                  d={!isGreaterThan920 ? "flex" : "table-cell"}
-                  justifyContent="space-between"
-                >
-                  {!isGreaterThan920 && <Text fontWeight={600}>Title</Text>}
-                  <Text>{movie.title}</Text>
-                </Td>
-                <Td
-                  d={!isGreaterThan920 ? "flex" : "table-cell"}
-                  justifyContent="space-between"
-                >
-                  {!isGreaterThan920 && <Text fontWeight={600}>Genres</Text>}
-                  <Text maxWidth={isGreaterThan920 ? "100%" : "70%"}>
-                    {movie.genres.join(", ")}
-                  </Text>
-                </Td>
-                <Td
-                  d={!isGreaterThan920 ? "flex" : "table-cell"}
-                  justifyContent="space-between"
-                >
-                  {!isGreaterThan920 && <Text fontWeight={600}>Synopsis</Text>}
-                  <Text
-                    maxWidth={isGreaterThan920 ? "90%" : "70%"}
-                    textAlign="justify"
-                  >
-                    {movie.synopsis}
-                  </Text>
-                </Td>
-                <Td
-                  d={!isGreaterThan920 ? "flex" : "table-cell"}
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  {!isGreaterThan920 && <Text fontWeight={600}>Comments</Text>}
-                  <Button onClick={() => handleCommentsShow(movie)}>
-                    Show
-                  </Button>
-                </Td>
-              </Tr>
+                movie={movie}
+                index={index}
+                onCommentShow={onCommentShow}
+              />
             );
           })}
         </Tbody>
       </Table>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Comments</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <VStack spacing={2}>
-              {selectedMovie?.comments.map((comment) => {
-                return (
-                  <Flex
-                    key={comment.id}
-                    borderWidth="1px"
-                    borderRadius="lg"
-                    overflow="hidden"
-                    padding="1rem"
-                    width="100%"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Text>{comment.content}</Text>
-                    <DeleteIcon
-                      cursor="pointer"
-                      onClick={() => handleCommentDelete(comment.id)}
-                    />
-                  </Flex>
-                );
-              })}
-            </VStack>
-            {selectedMovie?.comments.length === 0 && (
-              <Text textAlign="center">Comment first!</Text>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Textarea
-              placeholder="Type your comment here..."
-              marginRight="1rem"
-              value={commentInputText}
-              onChange={(event) => setCommentInputText(event.target.value)}
-            />
-            <Button colorScheme="teal" mr={3} onClick={handleCommentAdd}>
-              Send
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <CommentsModal
+        isOpen={isOpen}
+        onClose={onClose}
+        selectedMovie={selectedMovie}
+        onCommentAdd={onCommentAdd}
+        onCommentRemove={onCommentRemove}
+      />
     </>
   );
 };

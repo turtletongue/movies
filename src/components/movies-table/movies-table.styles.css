@@ -1,0 +1,17 @@
+.scroll-stack::-webkit-scrollbar {
+  background-color: transparent;
+  width: 4px;
+  margin: 0.1rem;
+}
+
+.scroll-stack::-webkit-scrollbar-thumb {
+  border-radius: 0.3rem;
+}
+
+.scroll-stack:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.scroll-stack {
+  scrollbar-width: thin;
+}

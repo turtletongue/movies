@@ -1,43 +1,45 @@
-import { Button } from "@chakra-ui/button";
-import { HStack } from "@chakra-ui/layout";
+import { ArrowBackIcon, ArrowForwardIcon } from "@chakra-ui/icons";
+import { Button, HStack } from "@chakra-ui/react";
 import { ROWS_IN_PAGE_LIMIT } from "../../constants";
+import { usePagination } from "../../redux/hooks";
 
 interface PaginationProps {
-  currentPage: number;
   totalCountOfMovies: number;
-  handlePageChange: (page: number) => void;
 }
 
-const Pagination = ({
-  currentPage,
-  totalCountOfMovies,
-  handlePageChange,
-}: PaginationProps) => {
+const Pagination = ({ totalCountOfMovies }: PaginationProps) => {
+  const { currentPage, setCurrentPage } = usePagination();
   const FIRST_PAGE = 1;
   const lastPage = Math.ceil(totalCountOfMovies / ROWS_IN_PAGE_LIMIT);
   const previousPage = currentPage - 1;
   const nextPage = currentPage + 1;
   return (
     <HStack spacing={2} margin="0.5rem">
+      <Button onClick={() => currentPage > 1 && setCurrentPage(previousPage)}>
+        <ArrowBackIcon />
+      </Button>
       {currentPage > 1 && (
-        <Button onClick={() => handlePageChange(FIRST_PAGE)}>
-          {FIRST_PAGE}
-        </Button>
+        <Button onClick={() => setCurrentPage(FIRST_PAGE)}>{FIRST_PAGE}</Button>
       )}
       {currentPage > 2 && (
-        <Button onClick={() => handlePageChange(previousPage)}>
+        <Button onClick={() => setCurrentPage(previousPage)}>
           {previousPage}
         </Button>
       )}
-      <Button onClick={() => handlePageChange(currentPage)} colorScheme="teal">
+      <Button onClick={() => setCurrentPage(currentPage)} colorScheme="teal">
         {currentPage}
       </Button>
       {currentPage < lastPage - 1 && (
-        <Button onClick={() => handlePageChange(nextPage)}>{nextPage}</Button>
+        <Button onClick={() => setCurrentPage(nextPage)}>{nextPage}</Button>
       )}
       {currentPage < lastPage && (
-        <Button onClick={() => handlePageChange(lastPage)}>{lastPage}</Button>
+        <Button onClick={() => setCurrentPage(lastPage)}>{lastPage}</Button>
       )}
+      <Button
+        onClick={() => currentPage < lastPage - 1 && setCurrentPage(nextPage)}
+      >
+        <ArrowForwardIcon />
+      </Button>
     </HStack>
   );
 };
